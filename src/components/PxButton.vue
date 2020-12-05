@@ -9,12 +9,12 @@
 
 <script>
 export default {
-  name: 'PxButton',
+  name: "PxButton",
 
   methods: {
     buttonClick() {
-      this.$emit('custom-click')
+      this.$emit("custom-click");
     }
   }
-}
+};
 </script>
