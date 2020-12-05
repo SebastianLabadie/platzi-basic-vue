@@ -31,21 +31,42 @@
         <td>
           <b>#{{ a.rank }} </b>
         </td>
-        <td>{{ a.name }}</td>
+        <td>
+          <router-link
+            class="hover:underline text-green-600"
+            :to="`/coin/${a.id}`"
+          >
+            {{ a.name }}
+            <small class="ml-1 text-gray-500">{{ a.symbol }}</small>
+          </router-link>
+        </td>
         <td>{{ a.priceUsd | dollar }}</td>
         <td>{{ a.marketCapUsd | dollar }}</td>
         <td
-          :class="a.changePercent24Hr.includes('-') ? 'text-red-600' : 'text-green-600'"
-        >{{ a.changePercent24Hr | percentage }}</td>
-        <td class="hidden sm:block">{{  }}</td>
+          :class="
+            a.changePercent24Hr.includes('-')
+              ? 'text-red-600'
+              : 'text-green-600'
+          "
+        >
+          {{ a.changePercent24Hr | percentage }}
+        </td>
+        <td   class="hidden sm:block">
+          <PxButton  v-on:custom-click="goToCoin(a.id)">
+            <span>Detail</span>
+          </PxButton>
+        </td>
       </tr>
     </tbody>
   </table>
 </template>
 
 <script>
+import PxButton from './PxButton'
 export default {
   name: "PxAssetsTable",
+
+  components:{PxButton},
 
   props: {
     assets: {
@@ -53,6 +74,12 @@ export default {
       default: () => [],
     },
   },
+
+        methods:{
+          goToCoin(id){
+            this.$router.push({name:'coin-detail',params:{id}})
+          }
+        }
 };
 </script>
 
