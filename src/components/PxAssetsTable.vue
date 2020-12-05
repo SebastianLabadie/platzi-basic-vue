@@ -1,7 +1,7 @@
 <template>
   <table>
     <thead>
-      <tr class="bg-gray-100 border-b-2 border-gray-400">
+      <tr class="border-b-2 border-gray-400">
         <th></th>
         <th>
           <span>Ranking</span>
@@ -17,7 +17,7 @@
       <tr
         v-for="a in assets"
         :key="a.id"
-        class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100"
+        class="border-b border-gray-200 hover:bg-gray-100"
       >
         <td>
           <img
@@ -25,16 +25,19 @@
               `https://static.coincap.io/assets/icons/${a.symbol.toLowerCase()}@2x.png`
             "
             :alt="a.name"
+            class="w-6 h-6"
           />
         </td>
         <td>
           <b>#{{ a.rank }} </b>
         </td>
         <td>{{ a.name }}</td>
-        <td>{{ a.priceUsd }}</td>
-        <td>{{ a.marketCapUsd }}</td>
-        <td>{{ a.changePrecent24Hr }}</td>
-        <td class="hidden sm:block">{{ a.rank }}</td>
+        <td>{{ a.priceUsd | dollar }}</td>
+        <td>{{ a.marketCapUsd | dollar }}</td>
+        <td
+          :class="a.changePercent24Hr.includes('-') ? 'text-red-600' : 'text-green-600'"
+        >{{ a.changePercent24Hr | percentage }}</td>
+        <td class="hidden sm:block">{{  }}</td>
       </tr>
     </tbody>
   </table>
