@@ -41,7 +41,7 @@
             </li>
             <li class="flex justify-between">
               <b class="text-gray-600 mr-10 uppercase">Variación 24hs</b>
-              <span>{{ asset.changePercent24Hr | percent }}</span>
+              <span>{{ asset.changePercent24Hr | percentage }}</span>
             </li>
           </ul>
         </div>
@@ -75,21 +75,49 @@
         :data="history.map(h => [h.date, parseFloat(h.priceUsd).toFixed(2)])"
       />
 
+
+      <!-- MARKETS -->
+     <h3 class="text-xl my-10">Mejores Ofertas de Cambio</h3>
+      <table>
+        <tr v-for="m in markets" :key="`${m.exchangeId}-${m.priceUsd}`" class="border-b">
+          <td>
+            <b>{{ m.exchangeId }}</b>
+          </td>
+          <td>{{ m.priceUsd | dollar }}</td>
+          <td>{{ m.baseSymbol }} / {{ m.quoteSymbol }}</td>
+          <td>
+            <PxButton
+              :is-loading="m.isLoading || false"
+              v-if="!m.url"
+              @custom-click="getWebSite(m)"
+            >
+              <span>Obtener Link</span>
+            </PxButton>
+
+            <a v-else class="hover:underline text-green-600" target="_blanck">{{ m.url }}</a>
+          </td>
+        </tr>
+      </table>
+
     </template>
   </div>
 </template>
 
 <script>
 import api from "@/api";
+import PxButton from "@/components/PxButton";
 
 export default {
   name: "CoinDetail",
+
+  components: { PxButton },
 
   data() {
     return {
       isLoading: false,
       asset: {},
-      history: []
+      history: [],
+      markets: []
     };
   },
 
@@ -122,13 +150,27 @@ export default {
       this.isLoading = true;
       const id = this.$route.params.id;
 
-      Promise.all([api.getAsset(id), api.getAssetHistory(id)])
-        .then(([asset, history]) => {
+      Promise.all([api.getAsset(id), api.getAssetHistory(id),api.getMarkets(id)])
+        .then(([asset, history,markets]) => {
           this.asset = asset;
           this.history = history;
+          this.markets= markets
         })
         .finally(() => (this.isLoading = false));
-    }
+    },
+    getWebSite(exchange) {
+      this.$set(exchange, 'isLoading', true)
+
+      return api
+        .getExchange(exchange.exchangeId)
+        .then(res => {
+          this.$set(exchange, 'url', res.exchangeUrl)
+        })
+        .finally(() => {
+          this.$set(exchange, 'isLoading', false)
+        })
+    },
+
   }
 };
 </script>

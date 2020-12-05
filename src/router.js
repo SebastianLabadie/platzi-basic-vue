@@ -28,7 +28,7 @@ export default new Router({
       component: CoinDetail
     },
     {
-      path: "/error",
+      path: "*",
       name: "error",
       component: Error
     }

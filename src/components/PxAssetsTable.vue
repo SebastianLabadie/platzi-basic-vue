@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import PxButton from "./PxButton";
+import PxButton from "@/components/PxButton";
 export default {
   name: "PxAssetsTable",
 
